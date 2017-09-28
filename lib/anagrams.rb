@@ -1,0 +1,2 @@
+class Anagrams
+end
