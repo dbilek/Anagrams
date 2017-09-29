@@ -1,24 +1,19 @@
-#require 'pry'
 class Anagrams
 
   def initialize
-    @counter = 0
     IO.copy_stream "anagrams_worldlist/chosen_word.txt", "anagrams_worldlist/chosen_word_copy.txt"
     @anagrams_worldlist = "anagrams_worldlist/chosen_word_copy.txt"
     @anagrams_temporary = "anagrams_worldlist/temporary_file.txt"
-    
   end
 
   def find_anagrams
     @anagrams_list = []
-    @counter += 1
     line_for_search = ""
 
     File.foreach(@anagrams_worldlist).with_index do |line, index|
       if first_line?(index)
         line_for_search = line.chomp
       end
-      #binding.pry
       find_anagrams_words(line_for_search, line)
     end
 
