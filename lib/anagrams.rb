@@ -1,66 +1,42 @@
 class Anagrams
+  attr_accessor :anagrams_wordlist, :test_file
 
   def initialize
-    IO.copy_stream "anagrams_worldlist/chosen_word.txt", "anagrams_worldlist/chosen_word_copy.txt"
-    @anagrams_worldlist = "anagrams_worldlist/chosen_word_copy.txt"
-    @anagrams_temporary = "anagrams_worldlist/temporary_file.txt"
+    self.anagrams_wordlist = "anagrams_wordlist/anagrams-wordlist.txt"
+    self.test_file = "anagrams_wordlist/test_file.txt"
   end
 
-  def find_anagrams
-    @anagrams_list = []
-    line_for_search = ""
+  def find_anagrams(anagrams_wordlist)
+    anagrams_wordlist = read_file(anagrams_wordlist)
 
-    File.foreach(@anagrams_worldlist).with_index do |line, index|
-      if first_line?(index)
-        line_for_search = line.chomp
-      end
-      find_anagrams_words(line_for_search, line)
-    end
-
-    puts  @anagrams_list.join(" ")
-    IO.copy_stream @anagrams_temporary, @anagrams_worldlist
-    File.truncate(@anagrams_temporary, 0)
-    
-    find_anagrams unless File.zero?(@anagrams_worldlist)
-    @anagrams_list
-  end
-
-
-  def find_anagrams_words(line_for_search, line)
-    line = utf8_encode(line).chomp 
-    if same_size?(line, line_for_search)
-      if matched_character_same_size?(line_for_search, line)
-        @anagrams_list << line
-      else
-        write_line_to_file(@anagrams_temporary, line)
-      end
-    else
-      write_line_to_file(@anagrams_temporary, line)
-    end
+    get_hash_with_anagrams(anagrams_wordlist)
   end
 
   private
-  
-    def write_line_to_file(file, word)
-      File.open(file, "a") do |write|
-        write.puts word
+
+    def get_hash_with_anagrams(anagrams_wordlist)
+      hash = Hash.new()
+      anagrams_wordlist.each do |line|
+        
+        key = line.downcase.split("").sort.join
+        
+        if hash.has_key?(key)
+          hash[key] << line
+        else
+          hash[key] = [line]
+        end
+
       end
+
+      hash
+
     end
 
-    def first_line?(index)
-      index == 0
-    end
+    def read_file(file)
+      utf8_encode(IO.read(file)).split("\n")
+    end  
 
     def utf8_encode(line_from_file)
       line_from_file.encode("UTF-16be", :invalid=>:replace, :replace=>"?").encode('UTF-8')
     end
-
-    def same_size?(line_from_file, word_from_input)
-      line_from_file.size == word_from_input.size
-    end
-
-    def matched_character_same_size?(word_from_input, line_from_file)
-      word_from_input.scan(/[#{line_from_file.downcase}]/).join.size == word_from_input.size
-    end
 end
-
