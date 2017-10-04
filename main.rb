@@ -1,8 +1,6 @@
 require_relative "lib/anagrams.rb"
 
-anagrams = Anagrams.new()
+anagram = Anagram.new("anagrams_wordlist/anagrams-wordlist.txt")
 
-anagrams.find_anagrams(anagrams.anagrams_wordlist).each do |key, value|
-	puts value.join(" ") if value.size > 1
-end
+anagram.read_anagrams(anagram.find_anagrams)
 
