@@ -30,9 +30,9 @@ class Anagram
     def get_unique_remove_nonanagram(anagrams_list)
       anagrams_result = []
       
-      anagrams_list.each do |key, value|
-        value = value.uniq
-        anagrams_result << value if value.size > 1
+      anagrams_list.each do |key, word_list|
+        word_list = word_list.uniq
+        anagrams_result << word_list if word_list.size > 1
       end
 
       anagrams_result
